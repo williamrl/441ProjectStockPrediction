@@ -1,0 +1,9 @@
+numpy
+pandas
+matplotlib
+scikit-learn
+hmmlearn
+yfinance
+vaderSentiment
+requests
+pytest
