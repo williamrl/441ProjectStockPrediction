@@ -7,3 +7,4 @@ yfinance
 vaderSentiment
 requests
 pytest
+flask

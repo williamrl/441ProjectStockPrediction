@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Prediction with HMM</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">📈 Stock/Crypto Prediction</span>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5>Analysis Parameters</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="ticker" class="form-label">Ticker Symbol</label>
+                            <input type="text" class="form-control" id="ticker" placeholder="e.g., AAPL, BTC" value="AAPL">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="assetType" class="form-label">Asset Type</label>
+                            <select class="form-select" id="assetType">
+                                <option value="stock" selected>Stock</option>
+                                <option value="crypto">Cryptocurrency</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="period" class="form-label">Time Period</label>
+                            <select class="form-select" id="period">
+                                <option value="3mo">3 Months</option>
+                                <option value="6mo">6 Months</option>
+                                <option value="1y" selected>1 Year</option>
+                                <option value="2y">2 Years</option>
+                                <option value="5y">5 Years</option>
+                            </select>
+                        </div>
+
+                        <button class="btn btn-primary w-100" id="predictBtn" onclick="runPrediction()">
+                            <span id="btnText">Run Prediction</span>
+                            <span id="spinner" class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true" style="display:none;"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <!-- Loading State -->
+                <div id="loadingState" class="alert alert-info d-none" role="alert">
+                    <div class="spinner-border text-primary me-3" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    Analyzing data and training model...
+                </div>
+
+                <!-- Error State -->
+                <div id="errorState" class="alert alert-danger d-none" role="alert">
+                    <strong>Error:</strong> <span id="errorMessage"></span>
+                </div>
+
+                <!-- Results State -->
+                <div id="resultsState" class="d-none">
+                    <!-- Price Info Card -->
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-header bg-secondary text-white">
+                            <h5 id="tickerTitle" class="mb-0">AAPL - Current Status</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="text-muted mb-1">Current Price</p>
+                                    <h4 id="currentPrice">$0.00</h4>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="text-muted mb-1">Daily Change</p>
+                                    <h4 id="priceChange" class="text-success">+0.00%</h4>
+                                </div>
+                            </div>
+                            <p class="text-muted mt-2 mb-0" id="dataPoints">Analyzed 252 trading days</p>
+                        </div>
+                    </div>
+
+                    <!-- Signal Card -->
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-header bg-secondary text-white">
+                            <h5 class="mb-0">Market Signal</h5>
+                        </div>
+                        <div class="card-body">
+                            <h3 id="signal" class="text-center mb-0">HOLD</h3>
+                            <p id="signalSubtext" class="text-center text-muted mt-2">Expected return: 0%</p>
+                        </div>
+                    </div>
+
+                    <!-- Model Metrics -->
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-header bg-secondary text-white">
+                            <h5 class="mb-0">Model Analysis</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-2"><strong>Current Market State:</strong> <span id="currentState">-</span></p>
+                            <p class="mb-2"><strong>Bull State Probability:</strong> <span id="bullProb">-</span></p>
+                            <p class="mb-0"><strong>State Transition:</strong> <span id="stateProbs">-</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart -->
+                <div id="chartState" class="d-none">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-secondary text-white">
+                            <h5 class="mb-0">Price Chart with Inferred States</h5>
+                        </div>
+                        <div class="card-body">
+                            <img id="chart" src="" alt="Price chart" class="img-fluid">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
