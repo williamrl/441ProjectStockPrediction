@@ -17,7 +17,7 @@ def test_feature_merge_and_hmm():
     df_returns = compute_daily_returns(df_prices)
     # create sentiment that is positive when returns are positive
     sent = df_returns["return"].fillna(0.0).apply(lambda x: 0.5 if x > 0 else -0.5)
-    df_sent = sent.to_frame()
+    df_sent = pd.DataFrame({"sentiment": sent.values}, index=sent.index)
 
     df_merged = merge_price_sentiment(df_returns, df_sent)
     X, idx = make_feature_matrix(df_merged)
